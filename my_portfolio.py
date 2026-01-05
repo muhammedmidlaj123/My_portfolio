@@ -1,7 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
 
-import streamlit as st
 
 # 1. Main Title
 st.title("Hi, I am Midhilaj EK! 👋")
