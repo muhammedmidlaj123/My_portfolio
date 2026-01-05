@@ -1,0 +1,6 @@
+Burger,Food,50
+Taxi,Travel,100
+Burger,Food,50
+Taxi,Travel,100
+Burger,Food,50
+Taxi,Travel,100
