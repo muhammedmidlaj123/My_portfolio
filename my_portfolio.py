@@ -1,3 +1,5 @@
+import streamlit as st
+import google.generativeai as genai
 
 import streamlit as st
 
@@ -59,3 +61,59 @@ with st.container():
             - **Jan 2026:** Built 'Smart Bank' with Google Gemini AI.
             - **Goal:** To secure an Internship in AI/Gen AI by March 2026.
             """)
+            st.write("---")
+            st.header("🤖 Chat with My AI Bot")
+
+            # 1. Ask for API Key (Securely)
+            api_key = st.text_input("Enter your Google API Key to Chat:", type="password")
+
+            if api_key:
+                # 2. Configure the AI
+                genai.configure(api_key=api_key)
+                model = genai.GenerativeModel('gemini-1.5-flash')
+
+                # 3. Initialize Chat History (This keeps messages on screen)
+                if "messages" not in st.session_state:
+                    st.session_state.messages = []
+
+                # 4. Display Old Messages
+                for message in st.session_state.messages:
+                    with st.chat_message(message["role"]):
+                        st.markdown(message["content"])
+
+                # 5. The Chat Input Box
+                if prompt := st.chat_input("Ask me anything about Midhilaj..."):
+                    # Show User Message
+                    st.chat_message("user").markdown(prompt)
+                    # Save to history
+                    st.session_state.messages.append({"role": "user", "content": prompt})
+
+                    # Generate AI Response
+                    try:
+                        # We give the AI a "Persona" so it knows who it is
+                        context = """
+                        You are an AI assistant for Midhilaj EK's Portfolio.
+                        Answer questions as if you are his digital representative.
+
+                        Midhilaj's Info:
+                        - Skills: Python, AI, Streamlit, Banking Systems.
+                        - Education: BCA Student at IGNOU, Commerce Background.
+                        - Current Goal: Internship in AI/Robotics.
+                        - Projects: Smart Bank System (Python), Portfolio Website (Streamlit).
+                        - Contact: midhilaj@example.com
+
+                        Keep answers short and professional.
+                        """
+
+                        full_prompt = context + f"\nUser: {prompt}\nAI:"
+                        response = model.generate_content(full_prompt)
+
+                        # Show AI Message
+                        with st.chat_message("assistant"):
+                            st.markdown(response.text)
+
+                        # Save AI message to history
+                        st.session_state.messages.append({"role": "assistant", "content": response.text})
+
+                    except Exception as e:
+                        st.error(f"Error: {e}")
