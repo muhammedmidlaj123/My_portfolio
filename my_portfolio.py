@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+# import google.generativeai as genai
 
 # 1. Main Title
 st.title("Hi, I am Midhilaj EK! 👋")
@@ -68,7 +68,7 @@ st.write("---")
 # 7. AI Chat Bot Section (NOW FIXED: Full Width)
 st.header("🤖 Chat with My AI Bot")
 
-api_key = st.text_input("Enter your Google API Key to Chat:", type="password")
+# api_key = st.text_input("Enter your Google API Key to Chat:", type="password")
 
 if api_key:
     genai.configure(api_key=api_key)
