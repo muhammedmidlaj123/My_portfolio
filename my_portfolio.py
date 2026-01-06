@@ -1,4 +1,6 @@
 import streamlit as st
+import requests  # <--- Standard tool, NO installation needed!
+import json
 
 # --- PAGE SETUP ---
 st.set_page_config(page_title="Midhilaj's Portfolio", page_icon="🚀")
@@ -9,13 +11,13 @@ st.title("Hi, I am Midhilaj EK! 👋")
 # 2. Subtitle
 st.subheader("Junior Python Developer & AI Enthusiast based in Dubai")
 
-# 3. Simple Text
+# 3. Bio
 st.write("""
 I am a passionate developer currently building AI-powered applications.
 I have experience with Python, Object-Oriented Programming, and Streamlit.
 """)
 
-# 4. Sidebar info
+# 4. Sidebar
 st.sidebar.header("Skills")
 st.sidebar.write("🐍 Python")
 st.sidebar.write("🤖 Artificial Intelligence")
@@ -23,11 +25,10 @@ st.sidebar.write("📊 Data Analysis")
 st.sidebar.write("---")
 st.sidebar.write("📍 Dubai, UAE")
 
-# 5. Projects Section
+# 5. Projects
 st.write("---")
 st.header("My Projects")
 
-# Project 1: Smart Bank AI
 with st.container():
     col1, col2 = st.columns([1, 2])
     with col1:
@@ -42,7 +43,7 @@ with st.container():
 
 st.write("---")
 
-# 6. Education Section
+# 6. Education
 st.header("Education & Timeline")
 edu_col1, edu_col2 = st.columns(2)
 
@@ -64,5 +65,57 @@ with edu_col2:
     """)
 
 st.write("---")
-st.header("🤖 AI Chat Bot")
-st.info("The AI Bot is currently undergoing maintenance. Check back soon!")
+
+# 7. THE "DIRECT LINE" AI CHAT BOT 🤖
+st.header("🤖 Chat with My AI Bot")
+
+# Securely ask for the Key
+api_key = st.text_input("Enter your Google API Key to Chat:", type="password")
+
+# Initialize Chat History
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display Old Messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Chat Input
+if prompt := st.chat_input("Ask me anything about Midhilaj..."):
+    # Show User Message
+    st.chat_message("user").markdown(prompt)
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    if not api_key:
+        st.error("Please enter an API Key to chat!")
+    else:
+        # --- THE SECRET BACK DOOR (Requests) ---
+        try:
+            # We call the URL directly instead of installing the library
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            headers = {"Content-Type": "application/json"}
+            
+            system_instruction = "You are an AI assistant for Midhilaj EK's Portfolio. You are professional and helpful."
+            
+            data = {
+                "contents": [{
+                    "parts": [{"text": system_instruction + "\nUser said: " + prompt}]
+                }]
+            }
+
+            response = requests.post(url, headers=headers, json=data)
+            
+            if response.status_code == 200:
+                result = response.json()
+                # Extract the text from the complex Google response
+                ai_text = result['candidates'][0]['content']['parts'][0]['text']
+                
+                with st.chat_message("assistant"):
+                    st.markdown(ai_text)
+                st.session_state.messages.append({"role": "assistant", "content": ai_text})
+            else:
+                st.error(f"Google Error: {response.status_code}")
+
+        except Exception as e:
+            st.error(f"Connection Error: {e}")
