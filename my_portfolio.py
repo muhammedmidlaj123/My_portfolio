@@ -1,5 +1,5 @@
 import streamlit as st
-import requests  # <--- Standard tool, NO installation needed!
+import requests
 import json
 
 # --- PAGE SETUP ---
@@ -90,10 +90,9 @@ if prompt := st.chat_input("Ask me anything about Midhilaj..."):
     if not api_key:
         st.error("Please enter an API Key to chat!")
     else:
-        # --- THE SECRET BACK DOOR (Requests) ---
+        # --- THE FIX: Using 'gemini-pro' instead of 'flash' ---
         try:
-            # We call the URL directly instead of installing the library
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
             headers = {"Content-Type": "application/json"}
             
             system_instruction = "You are an AI assistant for Midhilaj EK's Portfolio. You are professional and helpful."
@@ -108,14 +107,13 @@ if prompt := st.chat_input("Ask me anything about Midhilaj..."):
             
             if response.status_code == 200:
                 result = response.json()
-                # Extract the text from the complex Google response
                 ai_text = result['candidates'][0]['content']['parts'][0]['text']
                 
                 with st.chat_message("assistant"):
                     st.markdown(ai_text)
                 st.session_state.messages.append({"role": "assistant", "content": ai_text})
             else:
-                st.error(f"Google Error: {response.status_code}")
+                st.error(f"Google Error: {response.status_code} - {response.text}")
 
         except Exception as e:
             st.error(f"Connection Error: {e}")
