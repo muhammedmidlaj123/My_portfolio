@@ -92,7 +92,7 @@ if prompt := st.chat_input("Ask me anything about Midhilaj..."):
     else:
         # --- THE FIX: Using 'gemini-pro' instead of 'flash' ---
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
             headers = {"Content-Type": "application/json"}
             
             system_instruction = "You are an AI assistant for Midhilaj EK's Portfolio. You are professional and helpful."
