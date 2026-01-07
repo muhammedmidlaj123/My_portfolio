@@ -83,37 +83,57 @@ for message in st.session_state.messages:
 
 # Chat Input
 if prompt := st.chat_input("Ask me anything about Midhilaj..."):
-    # Show User Message
     st.chat_message("user").markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     if not api_key:
         st.error("Please enter an API Key to chat!")
     else:
-        # --- THE FIX: Using 'gemini-pro' instead of 'flash' ---
         try:
             url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
             headers = {"Content-Type": "application/json"}
-            
-            system_instruction = "You are an AI assistant for Midhilaj EK's Portfolio. You are professional and helpful."
-            
+
+            system_instruction = (
+                "You are an AI assistant for Midhilaj EK's Portfolio. "
+                "You are professional, friendly, and helpful."
+            )
+
             data = {
-                "contents": [{
-                    "parts": [{"text": system_instruction + "\nUser said: " + prompt}]
-                }]
+                "contents": [
+                    {
+                        "role": "user",
+                        "parts": [
+                            {
+                                "text": system_instruction + "\n\nUser: " + prompt
+                            }
+                        ]
+                    }
+                ],
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "maxOutputTokens": 300
+                }
             }
 
             response = requests.post(url, headers=headers, json=data)
-            
+
             if response.status_code == 200:
                 result = response.json()
-                ai_text = result['candidates'][0]['content']['parts'][0]['text']
-                
+
+                if "candidates" in result and len(result["candidates"]) > 0:
+                    ai_text = result["candidates"][0]["content"]["parts"][0]["text"]
+                else:
+                    ai_text = "⚠️ No response generated."
+
                 with st.chat_message("assistant"):
                     st.markdown(ai_text)
-                st.session_state.messages.append({"role": "assistant", "content": ai_text})
+
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": ai_text}
+                )
+
             else:
-                st.error(f"Google Error: {response.status_code} - {response.text}")
+                st.error(f"Google API Error {response.status_code}: {response.text}")
 
         except Exception as e:
             st.error(f"Connection Error: {e}")
