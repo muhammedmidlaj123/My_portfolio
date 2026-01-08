@@ -1,123 +1,63 @@
 import streamlit as st
-import requests
-import json
+import google.generativeai as genai
 
-# --- PAGE SETUP ---
-st.set_page_config(page_title="Midhilaj's Portfolio", page_icon="🚀")
+# 1. Page Configuration
+st.set_page_config(page_title="Zam's AI Portfolio", page_icon="🚀")
 
-# 1. Main Title
-st.title("Hi, I am Midhilaj EK! 👋")
+# 2. Side Bar: Personal Info
+with st.sidebar:
+    st.header("About Me")
+    st.image("https://cdn-icons-png.flaticon.com/512/4712/4712109.png", width=100) # Placeholder image
+    st.write("**Name:** Muhammed Midhilaj EK (Zam)")
+    st.write("**Role:** Python & AI Enthusiast")
+    st.write("**Location:** Dubai, UAE")
+    st.write("I am building AI tools and learning Python!")
+    
+    st.divider()
+    
+    # Check for API Key
+    if "GOOGLE_API_KEY" in st.secrets:
+        st.success("API Key Loaded! 🟢")
+        genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    else:
+        st.error("Missing API Key in Streamlit Secrets!")
+        st.stop()
 
-# 2. Subtitle
-st.subheader("Junior Python Developer & AI Enthusiast based in Dubai")
+# 3. Main Content: Introduction
+st.title("🤖 Zam's AI Portfolio")
+st.write("Welcome to my interactive portfolio! You can chat with my AI assistant below.")
 
-# 3. Bio
-st.write("""
-I am a passionate developer currently building AI-powered applications.
-I have experience with Python, Object-Oriented Programming, and Streamlit.
-""")
+st.divider()
 
-# 4. Sidebar
-st.sidebar.header("Skills")
-st.sidebar.write("🐍 Python")
-st.sidebar.write("🤖 Artificial Intelligence")
-st.sidebar.write("📊 Data Analysis")
-st.sidebar.write("---")
-st.sidebar.write("📍 Dubai, UAE")
+# 4. The Chatbot Logic (Updated Model)
+st.subheader("💬 Chat with my AI")
 
-# 5. Projects
-st.write("---")
-st.header("My Projects")
-
-with st.container():
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.header("🏦")
-    with col2:
-        st.subheader("Smart Bank System")
-        st.write("""
-        - A secure banking system built with Python.
-        - Features: Login/Signup, Loan Calculator, and Transaction History.
-        """)
-        st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/bank-system-python")
-
-st.write("---")
-
-# 6. Education
-st.header("Education & Timeline")
-edu_col1, edu_col2 = st.columns(2)
-
-with edu_col1:
-    st.subheader("🎓 Education")
-    st.write("**Bachelor of Computer Applications (BCA)**")
-    st.write("IGNOU (UAE Center) | *Current Student*")
-    st.write("---")
-    st.write("**Commerce Stream (Plus Two)**")
-    st.write("Completed with Focus on Business")
-
-with edu_col2:
-    st.subheader("🚀 My Journey")
-    st.write("""
-    - **Sept 2025:** Started learning Python basics.
-    - **Nov 2025:** Explored AI & Gen Ai Roadmaps.
-    - **Jan 2026:** Built 'Smart Bank' System.
-    - **Goal:** To secure an Internship in AI/Gen AI by March 2026.
-    """)
-
-st.write("---")
-
-# 7. THE "DIRECT LINE" AI CHAT BOT 🤖
-st.header("🤖 Chat with My AI Bot")
-
-# Securely ask for the Key
-api_key = st.text_input("Enter your Google API Key to Chat:", type="password")
-
-# Initialize Chat History
+# Initialize Chat History if it doesn't exist
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display Old Messages
+# Display previous chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat Input
-if prompt := st.chat_input("Ask me anything about Midhilaj..."):
-    # Show User Message
-    st.chat_message("user").markdown(prompt)
+# React to User Input
+if prompt := st.chat_input("Ask me anything..."):
+    # Display user message
+    with st.chat_message("user"):
+        st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    if not api_key:
-        st.error("Please enter an API Key to chat!")
-    else:
-        # --- THE FIX: Using 'gemini-1.5-flash' (The New Standard) ---
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-            headers = {"Content-Type": "application/json"}
-            
-            system_instruction = "You are an AI assistant for Midhilaj EK's Portfolio. You are professional and helpful."
-            
-            data = {
-                "contents": [{
-                    "parts": [{"text": system_instruction + "\nUser said: " + prompt}]
-                }]
-            }
-
-            response = requests.post(url, headers=headers, json=data)
-            
-            if response.status_code == 200:
-                result = response.json()
-                # Check if the response has the expected structure
-                if 'candidates' in result and result['candidates']:
-                     ai_text = result['candidates'][0]['content']['parts'][0]['text']
-                     with st.chat_message("assistant"):
-                         st.markdown(ai_text)
-                     st.session_state.messages.append({"role": "assistant", "content": ai_text})
-                else:
-                     st.error("Google AI replied, but blocked the content (Safety Filter). Try a different question.")
-
-            else:
-                st.error(f"Google Error: {response.status_code} - {response.text}")
-
-        except Exception as e:
-            st.error(f"Connection Error: {e}")
+    # Generate AI Response
+    try:
+        # --- THE FIX IS HERE: Using gemini-1.5-flash ---
+        model = genai.GenerativeModel('gemini-1.5-flash') 
+        response = model.generate_content(prompt)
+        
+        # Display AI message
+        with st.chat_message("assistant"):
+            st.markdown(response.text)
+        st.session_state.messages.append({"role": "assistant", "content": response.text})
+        
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
