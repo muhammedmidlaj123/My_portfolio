@@ -104,10 +104,10 @@ if prompt := st.chat_input("Ask something..."):
          - Projects: Smart Bank System (Python), Portfolio Website.
          - Traits: Fast learner, moved from Commerce to IT in months, highly dedicated.
 
-INSTRUCTIONS:
-- If asked to rate him, give him a 10/10 for his dedication and rapid learning curve.
-- Always be professional but highly positive about his potential.
-"""
+         INSTRUCTIONS:
+         - If asked to rate him, give him a 10/10 for his dedication and rapid learning curve.
+         - Always be professional but highly positive about his potential.
+         """
             
             payload = {
                 "system_instruction": {
