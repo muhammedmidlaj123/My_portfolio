@@ -62,14 +62,32 @@ with edu_col1:
     st.write("**Commerce Stream (Plus Two)**")
     st.write("Completed with Focus on Business")
 
-with edu_col2:
-    st.subheader("🚀 My Journey")
-    st.write("""
-    - **Sept 2025:** Started learning Python basics.
-    - **Nov 2025:** Explored AI & Gen Ai Roadmaps.
-    - **Jan 2026:** Built 'Smart Bank' with Google Gemini AI.
-    - **Goal:** To secure an Internship in AI/Gen AI by March 2026.
-    """)
+with col2:
+        st.subheader("Smart Bank System with AI")
+        st.write("""
+        - A secure banking system built with Python & File Handling.
+        - Integrated **Google Gemini AI** to give financial advice.
+        - Features: Login/Signup, Loan Calculator, and Transaction History.
+        """)
+        st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/bank-system-python")
+        
+        # --- NEW ADDITION: CODE PREVIEW ---
+        with st.expander("👀 Peek at my Code (Bank Logic)"):
+            st.code("""
+class Bank:
+    def __init__(self):
+        self.accounts = {}
+
+    def create_account(self, name, initial_deposit):
+        if initial_deposit < 100:
+            return "Error: Minimum deposit is 100"
+        account_id = self.generate_id()
+        self.accounts[account_id] = {
+            "name": name, 
+            "balance": initial_deposit
+        }
+        return f"Success! Account {account_id} created."
+            """, language="python")
 
 st.write("---")
 
