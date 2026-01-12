@@ -1,35 +1,37 @@
 import streamlit as st
- import google.generativeai as genai
+import requests
+import json
 
-# 1. Main Title
+# --- CONFIGURATION ---
+st.set_page_config(page_title="Midhilaj's Portfolio", page_icon="🚀")
+
+# 🔑 PASTE YOUR REAL API KEY HERE
+API_KEY = "YOUR_API_KEY_HERE" 
+URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
+
+# --- SIDEBAR & HEADER ---
+st.sidebar.header("Skills")
+st.sidebar.write("🐍 Python")
+st.sidebar.write("🤖 Artificial Intelligence")
+st.sidebar.write("📊 Data Analysis")
+st.sidebar.write("🌐 Streamlit & APIs")
+
 st.title("Hi, I am Midhilaj EK! 👋")
-
-# 2. Subtitle
 st.subheader("Junior Python Developer & AI Enthusiast based in Dubai")
 
-# 3. Simple Text
 st.write("""
 I am a passionate developer currently building AI-powered applications.
 I have experience with Python, Object-Oriented Programming, and Google Gemini AI.
 """)
 
-# 4. Sidebar info
-st.sidebar.header("Skills")
-st.sidebar.write("🐍 Python")
-st.sidebar.write("🤖 Artificial Intelligence")
-st.sidebar.write("📊 Data Analysis")
 st.write("---")
 
-# 5. Projects Section
+# --- PROJECTS SECTION ---
 st.header("My Projects")
-
-# Project 1: Smart Bank AI
 with st.container():
     col1, col2 = st.columns([1, 2])
-
     with col1:
         st.header("🏦")
-
     with col2:
         st.subheader("Smart Bank System with AI")
         st.write("""
@@ -41,9 +43,8 @@ with st.container():
 
 st.write("---")
 
-# 6. Education Section (NOW FIXED: Outside the columns)
+# --- EDUCATION SECTION ---
 st.header("Education & Timeline")
-
 edu_col1, edu_col2 = st.columns(2)
 
 with edu_col1:
@@ -65,42 +66,65 @@ with edu_col2:
 
 st.write("---")
 
-# 7. AI Chat Bot Section (NOW FIXED: Full Width)
+# --- AI CHATBOT SECTION ---
 st.header("🤖 Chat with My AI Bot")
+st.write("Ask me about my skills, projects, or resume!")
 
-api_key = st.text_input("Enter your Google API Key to Chat:", type="password")
+# 1. Initialize Chat History
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hello! I am Zam's AI Assistant. Ask me anything about his work!"}
+    ]
 
-if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash')
+# 2. Display Old Messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    if prompt := st.chat_input("Ask me anything about Midhilaj..."):
-        st.chat_message("user").markdown(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
+# 3. Handle New Input
+if prompt := st.chat_input("Ask something..."):
+    
+    # Show User Message
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    # THE BRAIN 🧠
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        message_placeholder.markdown("Thinking...")
 
         try:
-            context = """
-            You are an AI assistant for Midhilaj EK's Portfolio.
-            Answer questions as if you are his digital representative.
-            Midhilaj's Info:
-            - Skills: Python, AI, Streamlit, Banking Systems.
+            # Context for the AI
+            context_text = """
+            You are an AI assistant for Midhilaj EK (Zam).
+            - Location: Dubai, UAE (Visit Visa).
             - Education: BCA Student at IGNOU, Commerce Background.
-            - Current Goal: Internship in AI/Robotics.
-            - Projects: Smart Bank System (Python), Portfolio Website (Streamlit).
-            - Contact: midhilaj@example.com
-            Keep answers short and professional.
+            - Skills: Python, Streamlit, API Integration, JSON, Requests.
+            - Projects: Smart Bank System (Python), Portfolio Website.
+            - Goal: Seeking Internship in AI/Robotics.
+            Keep answers professional and concise.
             """
-             full_prompt = context + f"\nUser: {prompt}\nAI:"
-             response = model.generate_content(full_prompt)
-             with st.chat_message("assistant"):
-                st.markdown(response.text)
-             st.session_state.messages.append({"role": "assistant", "content": response.text})
+            
+            payload = {
+                "system_instruction": {
+                    "parts": [{"text": context_text}]
+                },
+                "contents": [{"parts": [{"text": prompt}]}]
+            }
+            
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(URL, headers=headers, data=json.dumps(payload))
+            
+            if response.status_code == 200:
+                data = response.json()
+                ai_response = data["candidates"][0]["content"]["parts"][0]["text"]
+            else:
+                ai_response = f"Error: {response.status_code} - {response.text}"
+
         except Exception as e:
-            st.error(f"Error: {e}")
+            ai_response = f"Connection Failed: {e}"
+
+        message_placeholder.markdown(ai_response)
+    
+    st.session_state.messages.append({"role": "assistant", "content": ai_response})
