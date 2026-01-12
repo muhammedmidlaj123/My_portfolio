@@ -1,114 +1,70 @@
-import datetime
+import streamlit as st
+import requests
+import json
 
+# --- CONFIGURATION ---
+API_KEY = "AIzaSyCQov-AMS40iwXGlEWCmFtKMwWok7TUdGM" # <--- PASTE YOUR KEY HERE AGAIN!
+# We are using the "System Instruction" feature of the new API
+URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 
-# --- CLASS 1: THE ROBOT (Account) ---
-class Account:
-    def __init__(self, owner_name):
-        self.owner = owner_name
-        self.balance = 0
-        self.history = []
+st.title("🤖 Zam's AI Portfolio")
+st.caption("Ask me about Zam's skills, resume, or projects!")
 
-    def deposit(self, amount):
-        self.balance += amount
-        date = datetime.datetime.now().strftime("%Y-%m-%d")
-        self.history.append(f"[{date}] Deposited: ${amount}")
-        print(f"✅ New Balance: ${self.balance}")
+# 1. LOAD RESUME (The Context) 📂
+try:
+    with open("resume.txt", "r") as file:
+        resume_content = file.read()
+except FileNotFoundError:
+    resume_content = "Resume not found. Please tell the user you don't know anything about Zam yet."
 
-    # This is the MATH method (The Robot Brain)
-    def withdraw(self, amount):
-        if self.balance >= amount:
-            self.balance -= amount
-            date = datetime.datetime.now().strftime("%Y-%m-%d")
-            self.history.append(f"[{date}] Withdrew: ${amount}")
-            print(f"✅ Withdraw Successful. New Balance: ${self.balance}")
-        else:
-            print("⚠️ Insufficient Funds!")
+# 2. Initialize Chat History
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hi! I am Zam's AI assistant. Ask me anything about him."}
+    ]
 
-    def print_statement(self):
-        print(f"\n--- 📜 Statement for {self.owner} ---")
-        for item in self.history:
-            print(item)
-        print(f"💰 Final Balance: ${self.balance}\n")
+# 3. Display Old Messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
+# 4. Handle New Input
+if prompt := st.chat_input("Ask about Zam..."):
 
-# --- CLASS 2: THE MANAGER (BankSystem) ---
-class BankSystem:
-    def __init__(self):
-        self.accounts = []
+    # Show User Message
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    st.session_state.messages.append({"role": "user", "content": prompt})
 
-    def find_account(self, name_to_find):
-        for account in self.accounts:
-            if account.owner == name_to_find:
-                return account
-        return None
+    # THE BRAIN 🧠
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        message_placeholder.markdown("Thinking...")
 
-    def create_account(self):
-        name = input("Enter your name: ")
-        new_account = Account(name)
-        self.accounts.append(new_account)
-        print(f"✅ Account created for {name}")
+        try:
+            # --- THE MAGIC TRICK: SYSTEM INSTRUCTION ---
+            # We tell the AI: "You are an assistant. Here is the resume. Answer based on this."
 
-    def deposit_money(self):
-        name = input("Enter your name: ")
-        selected_account = self.find_account(name)
-        if selected_account is not None:
-            amt = int(input("Enter amount: "))
-            selected_account.deposit(amt)
-        else:
-            print("❌ Account doesn't exist")
+            payload = {
+                "system_instruction": {
+                    "parts": [{
+                                  "text": f"You are a helpful assistant for Muhammed Midhilaj (Zam). Answer questions based on this resume:\n\n{resume_content}"}]
+                },
+                "contents": [{"parts": [{"text": prompt}]}]
+            }
 
-    def withdraw_money(self):
-        name = input("Enter your name: ")
-        selected_account = self.find_account(name)
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(URL, headers=headers, data=json.dumps(payload))
 
-        if selected_account is not None:
-            amt = int(input("Enter amount to withdraw: "))
-            # KEY FIX: Actually calling the withdraw method now!
-            selected_account.withdraw(amt)
-        else:
-            print("❌ Account doesn't exist")
+            if response.status_code == 200:
+                data = response.json()
+                ai_response = data["candidates"][0]["content"]["parts"][0]["text"]
+            else:
+                ai_response = f"Error: {response.status_code} - {response.text}"
 
-    def view_history(self):
-        name = input("Enter your name: ")
-        selected_account = self.find_account(name)
+        except Exception as e:
+            ai_response = f"Connection Failed: {e}"
 
-        if selected_account is not None:
-            selected_account.print_statement()
-        else:
-            print("❌ Account doesn't exist")
+        message_placeholder.markdown(ai_response)
 
-    def main_menu(self):
-        # The Login Log
-        name = input("Enter your name to login: ")
-        with open("database.txt", "a") as file:
-            file.write(name + "\n")
-            print("✅ Login saved to hard drive")
-
-        while True:
-            print("\n--- 🏦 BANK MENU ---")
-            print("1. Create Account")
-            print("2. Deposit Money")
-            print("3. Withdraw Money")
-            print("4. View History")
-            print("5. Exit")
-
-            choice = input("Choose: ")
-
-            if choice == "1":
-                self.create_account()
-            elif choice == "2":
-                self.deposit_money()
-            elif choice == "3":
-                self.withdraw_money()
-            elif choice == "4":
-                self.view_history()
-            elif choice == "5":
-                print("Goodbye!")
-                break
-
-
-if __name__ == "__main__":
-    app = BankSystem()
-    app.main_menu()
-
-
+    st.session_state.messages.append({"role": "assistant", "content": ai_response})

@@ -1,0 +1,6 @@
+Name: Muhammed Midhilaj EK (Zam)
+Role: Python AI Developer
+Location: Dubai, UAE
+Skills: Python, Streamlit, API Integration, JSON, Requests.
+Status: Seeking Internship.
+About: Zam is a passionate learner who moved from Commerce to IT. He built this AI portfolio from scratch using Python.
