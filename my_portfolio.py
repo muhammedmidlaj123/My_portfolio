@@ -10,9 +10,16 @@ API_KEY = "AIzaSyCQov-AMS40iwXGlEWCmFtKMwWok7TUdGM"
 URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 
 # --- SIDEBAR & HEADER ---
-st.sidebar.header("Skills")
-st.sidebar.write("🐍 Python")
-st.sidebar.write("🤖 Artificial Intelligence")
+st.sidebar.header("Tech Stack")
+st.sidebar.markdown(
+    """
+    ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+    ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=Streamlit&logoColor=white)
+    ![Gemini AI](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=flat&logo=googlebard&logoColor=white)
+    ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+    ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visualstudiocode&logoColor=white)
+    """
+)
 st.sidebar.write("📊 Data Analysis")
 st.sidebar.write("🌐 Streamlit & APIs")
 
