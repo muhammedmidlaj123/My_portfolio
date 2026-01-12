@@ -6,7 +6,7 @@ import json
 st.set_page_config(page_title="Midhilaj's Portfolio", page_icon="🚀")
 
 # 🔑 PASTE YOUR REAL API KEY HERE
-API_KEY = "YOUR_API_KEY_HERE" 
+API_KEY = "AIzaSyCQov-AMS40iwXGlEWCmFtKMwWok7TUdGM"
 URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 
 # --- SIDEBAR & HEADER ---
