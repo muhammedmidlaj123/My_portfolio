@@ -96,15 +96,18 @@ if prompt := st.chat_input("Ask something..."):
 
         try:
             # Context for the AI
-            context_text = """
-            You are an AI assistant for Midhilaj EK (Zam).
-            - Location: Dubai, UAE (Visit Visa).
-            - Education: BCA Student at IGNOU, Commerce Background.
-            - Skills: Python, Streamlit, API Integration, JSON, Requests.
-            - Projects: Smart Bank System (Python), Portfolio Website.
-            - Goal: Seeking Internship in AI/Robotics.
-            Keep answers professional and concise.
-            """
+          context_text = """
+         You are an enthusiastic AI assistant for Midhilaj EK (Zam).
+         Your goal is to promote him to recruiters.
+         -  Location: Dubai, UAE (Visit Visa).
+         - Skills: Python, Streamlit, API Integration, JSON, Requests.
+         - Projects: Smart Bank System (Python), Portfolio Website.
+         - Traits: Fast learner, moved from Commerce to IT in months, highly dedicated.
+
+INSTRUCTIONS:
+- If asked to rate him, give him a 10/10 for his dedication and rapid learning curve.
+- Always be professional but highly positive about his potential.
+"""
             
             payload = {
                 "system_instruction": {
