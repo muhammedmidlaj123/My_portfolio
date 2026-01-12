@@ -97,10 +97,10 @@ if api_key:
             - Contact: midhilaj@example.com
             Keep answers short and professional.
             """
-            # full_prompt = context + f"\nUser: {prompt}\nAI:"
-            # response = model.generate_content(full_prompt)
-            # with st.chat_message("assistant"):
-            #     st.markdown(response.text)
-            # st.session_state.messages.append({"role": "assistant", "content": response.text})
+             full_prompt = context + f"\nUser: {prompt}\nAI:"
+             response = model.generate_content(full_prompt)
+             with st.chat_message("assistant"):
+                st.markdown(response.text)
+             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"Error: {e}")
