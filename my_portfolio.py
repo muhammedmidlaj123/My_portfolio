@@ -5,8 +5,14 @@ import json
 # --- CONFIGURATION ---
 st.set_page_config(page_title="Midhilaj's Portfolio", page_icon="🚀")
 
-# 🔑 PASTE YOUR REAL API KEY HERE
-API_KEY = "AIzaSyCQov-AMS40iwXGlEWCmFtKMwWok7TUdGM"
+# --- API SETUP (SECURE) ---
+try:
+    # 🔑 This pulls the key from Streamlit Cloud Secrets!
+    API_KEY = st.secrets["GOOGLE_API_KEY"]
+except FileNotFoundError:
+    st.error("⚠️ Key not found. Did you add GOOGLE_API_KEY to Streamlit Secrets?")
+    st.stop()
+
 URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 
 # --- SIDEBAR & HEADER ---
@@ -47,31 +53,8 @@ with st.container():
         - Features: Login/Signup, Loan Calculator, and Transaction History.
         """)
         st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/bank-system-python")
-
-st.write("---")
-
-# --- EDUCATION SECTION ---
-st.header("Education & Timeline")
-edu_col1, edu_col2 = st.columns(2)
-
-with edu_col1:
-    st.subheader("🎓 Education")
-    st.write("**Bachelor of Computer Applications (BCA)**")
-    st.write("IGNOU (UAE Center) | *Current Student*")
-    st.write("---")
-    st.write("**Commerce Stream (Plus Two)**")
-    st.write("Completed with Focus on Business")
-
-with col2:
-        st.subheader("Smart Bank System with AI")
-        st.write("""
-        - A secure banking system built with Python & File Handling.
-        - Integrated **Google Gemini AI** to give financial advice.
-        - Features: Login/Signup, Loan Calculator, and Transaction History.
-        """)
-        st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/bank-system-python")
         
-        # --- NEW ADDITION: CODE PREVIEW ---
+        # Code Preview
         with st.expander("👀 Peek at my Code (Bank Logic)"):
             st.code("""
 class Bank:
@@ -88,6 +71,22 @@ class Bank:
         }
         return f"Success! Account {account_id} created."
             """, language="python")
+
+st.write("---")
+
+# --- EDUCATION SECTION ---
+st.header("Education & Timeline")
+edu_col1, edu_col2 = st.columns(2)
+
+with edu_col1:
+    st.subheader("🎓 Education")
+    st.write("**Bachelor of Computer Applications (BCA)**")
+    st.write("IGNOU (UAE Center) | *Current Student*")
+    st.write("---")
+    st.write("**Commerce Stream (Plus Two)**")
+    st.write("Completed with Focus on Business")
+
+# (Removed the duplicate Bank System code that was here)
 
 st.write("---")
 
@@ -134,7 +133,6 @@ if prompt := st.chat_input("Ask something..."):
             - Always be professional but highly positive about his potential.
             """
             
-            # THE FIX: Ensure this line aligns perfectly with 'context_text' above
             payload = {
                 "system_instruction": {
                     "parts": [{"text": context_text}]
