@@ -74,6 +74,30 @@ class Bank:
 
 st.write("---")
 
+# --- NEW PROJECT: INVOICE AUTOMATION ---
+with st.container():
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.header("🧾")
+    with col2:
+        st.subheader("AI Invoice Automator")
+        st.write("""
+        - Automated data entry tool for Dubai businesses.
+        - Uses **Gemini 1.5 Flash** to extract Vendor Name, Date, and Total Amount.
+        - Converts image invoices into structured **JSON** instantly.
+        """)
+        st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/Invoice-Automation-Agent")
+        
+        # Code Preview
+        with st.expander("👀 Peek at the AI Logic"):
+            st.code("""
+def get_gemini_response(image, prompt):
+    # The 'Flash' model is optimized for speed and cost
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content([prompt, image])
+    return response.text
+            """, language="python")
+
 # --- EDUCATION SECTION ---
 st.header("Education & Timeline")
 edu_col1, edu_col2 = st.columns(2)
