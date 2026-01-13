@@ -44,59 +44,29 @@ st.header("My Projects")
 with st.container():
     col1, col2 = st.columns([1, 2])
     with col1:
-        st.header("🏦")
+        st.header("🧾")
     with col2:
-        st.subheader("Smart Bank System with AI")
+        st.subheader("AI Invoice Automator (New!)")
         st.write("""
-        - A secure banking system built with Python & File Handling.
-        - Integrated **Google Gemini AI** to give financial advice.
-        - Features: Login/Signup, Loan Calculator, and Transaction History.
+        - **Automated Data Entry:** Extracts Invoice #, Date, and Totals from PDFs using AI.
+        - **Tech:** Python, Gemini Flash, Streamlit.
+        - **Impact:** Reduces manual work by 90%.
         """)
-        st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/bank-system-python")
-        
-        # Code Preview
-        with st.expander("👀 Peek at my Code (Bank Logic)"):
-            st.code("""
-class Bank:
-    def __init__(self):
-        self.accounts = {}
+        st.link_button("View Code", "https://github.com/muhammedmidlaj123/Invoice-Automation-Agent")
 
-    def create_account(self, name, initial_deposit):
-        if initial_deposit < 100:
-            return "Error: Minimum deposit is 100"
-        account_id = self.generate_id()
-        self.accounts[account_id] = {
-            "name": name, 
-            "balance": initial_deposit
-        }
-        return f"Success! Account {account_id} created."
-            """, language="python")
-
-st.write("---")
-
-# --- NEW PROJECT: INVOICE AUTOMATION ---
 with st.container():
     col1, col2 = st.columns([1, 2])
     with col1:
-        st.header("🧾")
+        st.header("🏦")
     with col2:
-        st.subheader("AI Invoice Automator")
+        st.subheader("Smart Bank System")
         st.write("""
-        - Automated data entry tool for Dubai businesses.
-        - Uses **Gemini 1.5 Flash** to extract Vendor Name, Date, and Total Amount.
-        - Converts image invoices into structured **JSON** instantly.
+        - A secure banking logic app with Login/Signup & Transaction history.
+        - Built using Python OOP and File Handling.
         """)
-        st.link_button("View Code on GitHub", "https://github.com/muhammedmidlaj123/Invoice-Automation-Agent")
-        
-        # Code Preview
-        with st.expander("👀 Peek at the AI Logic"):
-            st.code("""
-def get_gemini_response(image, prompt):
-    # The 'Flash' model is optimized for speed and cost
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content([prompt, image])
-    return response.text
-            """, language="python")
+        st.link_button("View Code", "https://github.com/muhammedmidlaj123/bank-system-python")
+
+st.write("---")
 
 # --- EDUCATION SECTION ---
 st.header("Education & Timeline")
@@ -110,8 +80,6 @@ with edu_col1:
     st.write("**Commerce Stream (Plus Two)**")
     st.write("Completed with Focus on Business")
 
-# (Removed the duplicate Bank System code that was here)
-
 st.write("---")
 
 # --- AI CHATBOT SECTION ---
@@ -121,7 +89,7 @@ st.write("Ask me about my skills, projects, or resume!")
 # 1. Initialize Chat History
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "assistant", "content": "Hello! I am Zam's AI Assistant. Ask me anything about his work!"}
+        {"role": "assistant", "content": "Hello! I am Zam's AI Assistant. Ask me about his Invoice Project!"}
     ]
 
 # 2. Display Old Messages
@@ -143,7 +111,7 @@ if prompt := st.chat_input("Ask something..."):
         message_placeholder.markdown("Thinking...")
 
         try:
-            # Context for the AI
+            # Context for the AI (Updated with Invoice Project)
             context_text = """
             You are an enthusiastic AI assistant for Midhilaj EK (Zam).
             Your goal is to promote him to recruiters as a Junior Python Developer.
@@ -167,7 +135,6 @@ if prompt := st.chat_input("Ask something..."):
             - If asked "Why hire him?", mention his speed in learning and his practical projects.
             - Keep answers short, punchy, and professional.
             """
-           
             
             payload = {
                 "system_instruction": {
