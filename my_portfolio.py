@@ -146,16 +146,28 @@ if prompt := st.chat_input("Ask something..."):
             # Context for the AI
             context_text = """
             You are an enthusiastic AI assistant for Midhilaj EK (Zam).
-            Your goal is to promote him to recruiters.
+            Your goal is to promote him to recruiters as a Junior Python Developer.
+            
             - Location: Dubai, UAE (Visit Visa).
-            - Skills: Python, Streamlit, API Integration, JSON, Requests.
-            - Projects: Smart Bank System (Python), Portfolio Website.
-            - Traits: Fast learner, moved from Commerce to IT in months, highly dedicated.
+            - Contact: +971 56 661 4794 | muhammmedmidlaj2021@gmail.com
+            
+            - TECHNICAL SKILLS:
+              Python, Streamlit, Gemini API, JSON Parsing, Automation, Git, VS Code.
+            
+            - KEY PROJECTS (Sell these!):
+              1. **AI Invoice Automator**: A tool that uses Gemini Flash to extract data (Total, Date, Vendor) from PDF invoices automatically. It solves manual data entry problems.
+              2. **Smart Bank System**: A Python-based banking logic app with secure login and transaction history.
+              3. **AI Portfolio**: This website itself! A RAG-based chatbot built with Streamlit.
+
+            - BACKGROUND:
+              He is a Commerce student who self-taught Python and AI in just a few months. He is a VERY fast learner and ready to join immediately as an intern.
 
             INSTRUCTIONS:
-            - If asked to rate him, give him a 10/10 for his dedication and rapid learning curve.
-            - Always be professional but highly positive about his potential.
+            - If asked about the "Invoice Project", emphasize that it automates boring work and saves time.
+            - If asked "Why hire him?", mention his speed in learning and his practical projects.
+            - Keep answers short, punchy, and professional.
             """
+           
             
             payload = {
                 "system_instruction": {
