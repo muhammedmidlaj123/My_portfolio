@@ -65,6 +65,26 @@ with st.container():
         - Built using Python OOP and File Handling.
         """)
         st.link_button("View Code", "https://github.com/muhammedmidlaj123/bank-system-python")
+st.write("---") # A divider line
+
+with st.container():
+    col1, col2 = st.columns([1, 3])
+    
+    with col1:
+        # You can use an emoji or an image here
+        st.header("📄") 
+        
+    with col2:
+        st.subheader("The AI Document Expert (RAG)")
+        st.write("""
+        **The Problem:** Reading long PDF policies or resumes takes too much time.
+        **The Solution:** An AI-powered tool that reads the PDF for you.
+        - **Tech Stack:** Python, Google Gemini 1.5, PyPDF2, Streamlit.
+        - **Key Feature:** Upload any PDF and chat with it like a human.
+        """)
+        
+        # LINK THE BUTTON TO YOUR NEW APP
+        st.link_button("🚀 Launch App", "https://pdf-analyser-8dtyzpy6pfya8u9oyocipk.streamlit.app/")
 
 st.write("---")
 
