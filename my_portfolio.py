@@ -175,7 +175,7 @@ if prompt := st.chat_input("Ask something..."):
      
             payload = {
                 "system_instruction": {
-                    "parts": [{"text": context_text}]
+                    "parts": [{"text": system_instruction}]
                 },
                 "contents": [{"parts": [{"text": prompt}]}]
             }
